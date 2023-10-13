@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Flutter",
+        "request": "launch",
+        "type": "dart",
+        "program": "lib/main.dart",
+        "args": ["-d", "chrome"],
+        "cwd": "${workspaceFolder}",
+        // "runtimeExecutable": "flutter",
+        // "runtimeArgs": ["run"],
+        // "sourceMaps": true,
+        "flutterMode": "debug",
+        // "flutterRunProgram": "${workspaceFolder}/lib/main.dart"
+      }
+    ]
+  }
