@@ -1,0 +1,11 @@
+{
+  "@@locale": "en",
+  "appTitle": "My App",
+  "messageLabel": "Messages",
+  "contactsLabel": "Contacts",
+  "groupsLabel": "Groups",
+  "discoverLabel": "Discover",
+  "settingsLabel": "Settings",
+  "langSetting":"Language",
+  "logout":"logout"
+}

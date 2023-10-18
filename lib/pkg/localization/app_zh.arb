@@ -1,0 +1,11 @@
+{
+  "@@locale": "zh",
+  "appTitle": "我的应用",
+  "messageLabel": "消息",
+  "contactsLabel": "通讯录",
+  "groupsLabel": "群组",
+  "discoverLabel": "发现",
+  "settingsLabel": "个人设置",
+  "langSetting":"語言設定",
+  "logout":"登出"
+}
