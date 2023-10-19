@@ -14,9 +14,6 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-      ),
       body: ListView(
         children: <Widget>[
           // 列表项 1: 用户资料

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application/pkg/views/common/left_draw.dart';
 import 'package:flutter_application/pkg/views/contact/contact.dart';
 import 'package:flutter_application/pkg/views/discover/discover.dart';
 import 'package:flutter_application/pkg/views/group/group.dart';
@@ -16,27 +17,43 @@ class NavigationBars extends StatefulWidget {
 class _NavigationBarsState extends State<NavigationBars> {
   int _currentIndex = 0;
 
-  final List _pageList = [
-    const Message(),
-    const Contact(),
-    const Group(),
-    const Discover(),
-    const Profile(),
+  final List<PageData> _pageDataList = [
+    PageData(page: const Message(), appBarTitle: 'Message Page'),
+    PageData(page: const Contact(), appBarTitle: 'Contact Page'),
+    PageData(page: const Group(), appBarTitle: 'Group Page'),
+    PageData(page: const Discover(), appBarTitle: 'Discover Page'),
+    PageData(page: const Profile(), appBarTitle: 'Profile Page'),
   ];
 
   Widget getCurrentPage(BuildContext context) {
-    if (_currentIndex > _pageList.length) {
+    if (_currentIndex > _pageDataList.length) {
       return Container();
     }
-    return _pageList[_currentIndex];
+    return _pageDataList[_currentIndex].page;
+  }
+
+  String getLabel(BuildContext context) {
+    if (_currentIndex > _pageDataList.length) {
+      return "";
+    }
+    var list = [
+      AppLocalizations.of(context)!.messageLabel,
+      AppLocalizations.of(context)!.contactsLabel,
+      AppLocalizations.of(context)!.groupsLabel,
+      AppLocalizations.of(context)!.discoverLabel,
+      AppLocalizations.of(context)!.settingsLabel,
+    ];
+
+    return list[_currentIndex];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Home Page'),
-      // ),
+      appBar: AppBar(
+        title: Text(getLabel(context)),
+      ),
+      drawer: const LeftDraw(),
       body: getCurrentPage(context),
       bottomNavigationBar: BottomNavigationBar(
         items: [
@@ -75,4 +92,11 @@ class _NavigationBarsState extends State<NavigationBars> {
       ),
     );
   }
+}
+
+class PageData {
+  final Widget page;
+  final String appBarTitle;
+
+  PageData({required this.page, required this.appBarTitle});
 }
