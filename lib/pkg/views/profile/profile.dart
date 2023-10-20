@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application/pkg/views/common/home_page.dart';
 import 'package:flutter_application/pkg/views/profile/lang_setting.dart';
-import 'package:flutter_application/src/views/login_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Profile extends StatefulWidget {
@@ -41,10 +41,14 @@ class _ProfileState extends State<Profile> {
             title: Text(AppLocalizations.of(context)!.logout),
             onTap: () {
               // 导航到登出页面
-              Navigator.of(context).push(MaterialPageRoute(
-                // TODO 登出邏輯
-                builder: (context) => const LoginPage(),
-              ));
+              // Navigator.of(context).push(MaterialPageRoute(
+              //   // TODO 登出邏輯
+              //   builder: (context) => const LoginPage(),
+              // ));
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => const HomePage()),
+                  (route) => false);
+              Navigator.pushNamed(context, "/login");
             },
           ),
           // 可以添加更多的列表项...

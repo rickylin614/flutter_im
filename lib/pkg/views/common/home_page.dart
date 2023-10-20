@@ -7,14 +7,14 @@ import 'package:flutter_application/pkg/views/message/message.dart';
 import 'package:flutter_application/pkg/views/profile/profile.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class NavigationBars extends StatefulWidget {
-  const NavigationBars({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<NavigationBars> createState() => _NavigationBarsState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _NavigationBarsState extends State<NavigationBars> {
+class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
 
   final List<PageData> _pageDataList = [

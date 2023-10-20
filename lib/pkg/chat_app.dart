@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application/pkg/views/common/auth_bloc.dart';
-import 'package:flutter_application/pkg/views/common/navigation_bar.dart';
+import 'package:flutter_application/pkg/views/common/route.dart';
+import 'package:flutter_application/pkg/views/common/state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -17,6 +17,7 @@ class ChatApp extends StatefulWidget {
 
 class ChatAppState extends State<ChatApp> {
   Locale _locale = const Locale('zh', '');
+  // ThemeData _currentTheme = ThemeData.dark(); // 初始主题
 
   void setLocale(Locale value) {
     setState(() {
@@ -24,14 +25,16 @@ class ChatAppState extends State<ChatApp> {
     });
   }
 
+  void toggleTheme() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: BlocProvider(
-        create: (context) => AuthBloc(),
-        child: const NavigationBars(),
-      ),
-      theme: ThemeData.dark(),
+      onGenerateRoute: onGenerateRoute,
+      routes: routes,
+      theme: BlocProvider.of<ThemeBloc>(context).state,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
