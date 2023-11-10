@@ -28,27 +28,39 @@ class ApiService {
     }
   }
 
+  void updateToken(String newToken) {
+    _headers[HttpHeaders.authorizationHeader] = newToken;
+  }
+
   final ApiResponse defaultResponse =
-      ApiResponse(code: "1", msg: "異常錯誤", data: "");
+      ApiResponse(code: "1", msg: "API调用失败", data: "");
+
+  Future<ApiResponse> _safeApiCall(
+      BuildContext context, Future<http.Response> Function() apiMethod) async {
+    try {
+      final response = await apiMethod();
+      // 正常处理响应
+      ApiResponse resp = _processResponse(response);
+      if (context.mounted) _handleError(context, resp);
+      return resp;
+    } catch (e) {
+      // 统一处理异常
+      // 可以根据不同的异常类型来做不同的处理
+      // ignore: avoid_print
+      print('API调用异常: $e');
+      return defaultResponse;
+    }
+  }
 
   Future<ApiResponse> login(
       BuildContext context, String username, String password) async {
-    try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/users/login'),
-        headers: _headers,
-        body: jsonEncode({
-          'username': username,
-          'password': password,
-        }),
-      );
-      return _processResponse(response);
-      // 处理响应
-    } catch (e) {
-      // 处理异常
-      print('发生错误: $e');
-      return defaultResponse;
-    }
+    return _safeApiCall(
+        context,
+        () => http.post(
+              Uri.parse('$baseUrl/users/login'),
+              headers: _headers,
+              body: jsonEncode({'username': username, 'password': password}),
+            ));
   }
 
   Future<ApiResponse> register(
@@ -58,21 +70,19 @@ class ApiService {
       String phoneNumber,
       String username,
       String nickname) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/users/register'),
-      headers: _headers,
-      body: jsonEncode({
-        'email': email,
-        'password': password,
-        'phone_number': phoneNumber,
-        'username': username,
-        'nickname': nickname,
-      }),
-    );
-
-    ApiResponse resp = _processResponse(response);
-    if (context.mounted) _handleError(context, resp);
-    return resp;
+    return _safeApiCall(
+        context,
+        () => http.post(
+              Uri.parse('$baseUrl/users/register'),
+              headers: _headers,
+              body: jsonEncode({
+                'email': email,
+                'password': password,
+                'phone_number': phoneNumber,
+                'username': username,
+                'nickname': nickname,
+              }),
+            ));
   }
 
   ApiResponse _processResponse(http.Response response) {

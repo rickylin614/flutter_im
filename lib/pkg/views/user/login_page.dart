@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_application/pkg/service/apiservice.dart';
@@ -28,13 +30,18 @@ class LoginPage extends StatelessWidget {
       AuthBloc().logIn(token);
       // 登录成功，导航到HomePage
       if (!context.mounted) return;
-      Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => const HomePage(),
-      ));
+      DialogUtils.showSuccessDialog(
+          context,
+          "恭喜",
+          "登入成功",
+          () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const HomePage(),
+              )));
     } else {
       // 登录失败，显示错误消息
       if (!context.mounted) return;
-      DialogUtils.showAlertDialog(context, 'Login Faild', response.msg);
+      DialogUtils.showAlertDialog(
+          context, response.msg, jsonEncode(response.data));
     }
   }
 
