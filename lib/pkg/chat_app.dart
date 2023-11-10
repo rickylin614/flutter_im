@@ -32,8 +32,8 @@ class ChatAppState extends State<ChatApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      onGenerateRoute: onGenerateRoute,
-      routes: routes,
+      onGenerateRoute: AppRouter.onGenerateRoute,
+      routes: AppRouter.routes,
       theme: BlocProvider.of<ThemeBloc>(context).state,
       localizationsDelegates: const [
         AppLocalizations.delegate,

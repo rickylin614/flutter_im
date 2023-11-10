@@ -1,5 +1,6 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application/pkg/service/apiservice.dart';
+import 'package:flutter_application/pkg/views/user/login_page.dart';
 
 class RegisterPage extends StatelessWidget {
   static const routeName = '/register';
@@ -14,15 +15,38 @@ class RegisterPage extends StatelessWidget {
     final TextEditingController phoneNumberController = TextEditingController();
     final TextEditingController usernameController = TextEditingController();
 
-    void getHttp(data) async {
-      Dio dio = Dio();
-      await dio
-          .get('http://localhost:9000/im/users/register', data: data)
-          .then((response) {
-        print(response.data);
-      }).catchError((error) {
-        print('Error: $error');
-      });
+    void register() async {
+      final String email = emailController.text;
+      final String nickname = nicknameController.text;
+      final String password = passwordController.text;
+      final String phoneNumber = phoneNumberController.text;
+      final String username = usernameController.text;
+
+      var apiService = ApiService(context);
+      var response = await apiService.register(
+          context, email, password, phoneNumber, username, nickname);
+
+      if (!context.mounted) return;
+      if (response.code == "0") {
+        // 注册成功，导航到登录页面
+
+        Navigator.of(context).pushReplacementNamed(LoginPage.routeName);
+      } else {
+        // 注册失败，显示错误消息
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Register Failed'),
+            content: Text(response.msg), // 显示API返回的错误消息
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          ),
+        );
+      }
     }
 
     return Scaffold(
@@ -67,19 +91,7 @@ class RegisterPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
-                  final registerData = {
-                    "email": emailController.text,
-                    "nickname": nicknameController.text,
-                    "password": passwordController.text,
-                    "phone_number": phoneNumberController.text,
-                    "username": usernameController.text,
-                  };
-                  getHttp(registerData);
-
-                  // 发送注册数据到服务器，可以使用 http 包或其他网络请求库
-                  // 处理注册逻辑，检查响应并导航到成功或失败页面
-                },
+                onPressed: register,
                 child: const Text('Register'),
               ),
             ],

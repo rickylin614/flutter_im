@@ -1,12 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application/pkg/chat_app.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthBloc extends Cubit<bool> {
-  AuthBloc() : super(true);
+  final _storage = const FlutterSecureStorage();
 
-  void logIn() => emit(true);
-  void logOut() => emit(false);
+  AuthBloc() : super(false) {
+    _checkLoggedInStatus();
+  }
+
+  Future<void> _checkLoggedInStatus() async {
+    final isLoggedIn = await _storage.read(key: 'isLoggedIn') == 'true';
+    emit(isLoggedIn);
+  }
+
+  Future<void> logIn(String token) async {
+    await _storage.write(key: 'token', value: token);
+    await _storage.write(key: 'isLoggedIn', value: 'true');
+    emit(true);
+  }
+
+  Future<void> logOut() async {
+    await _storage.delete(key: 'token');
+    await _storage.write(key: 'isLoggedIn', value: 'false');
+    emit(false);
+  }
+
+  Future<String?> getToken() async {
+    return await _storage.read(key: 'token');
+  }
 }
 
 class ThemeBloc extends Cubit<ThemeData> {
