@@ -48,7 +48,10 @@ class ApiService {
       // 可以根据不同的异常类型来做不同的处理
       // ignore: avoid_print
       print('API调用异常: $e');
-      return defaultResponse;
+      return ApiResponse(
+          code: defaultResponse.code,
+          msg: defaultResponse.msg,
+          data: e.toString());
     }
   }
 

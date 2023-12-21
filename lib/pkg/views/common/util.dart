@@ -7,7 +7,13 @@ class DialogUtils {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(title),
+          title: Row(
+            children: <Widget>[
+              const Icon(Icons.check_circle, color: Colors.green),
+              const SizedBox(width: 10),
+              Text(title),
+            ],
+          ),
           content: Text(message),
           actions: <Widget>[
             TextButton(
@@ -26,7 +32,13 @@ class DialogUtils {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(title),
+          title: Row(
+            children: <Widget>[
+              const Icon(Icons.warning, color: Colors.orange),
+              const SizedBox(width: 10),
+              Text(title),
+            ],
+          ),
           content: Text(message),
           actions: <Widget>[
             TextButton(
