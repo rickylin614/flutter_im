@@ -7,6 +7,7 @@ import 'package:flutter_application/pkg/views/common/home_page.dart';
 import 'package:flutter_application/pkg/views/common/state.dart';
 import 'package:flutter_application/pkg/views/common/util.dart';
 import 'package:flutter_application/pkg/views/user/register.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginPage extends StatelessWidget {
   static const routeName = '/login';
@@ -47,6 +48,10 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String username = AppLocalizations.of(context)!.username;
+    String password = AppLocalizations.of(context)!.password;
+    String login = AppLocalizations.of(context)!.login;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
@@ -64,7 +69,7 @@ class LoginPage extends StatelessWidget {
               const SizedBox(height: 20),
               TextFormField(
                 controller: _usernameController,
-                decoration: const InputDecoration(labelText: 'Username'),
+                decoration: InputDecoration(labelText: username),
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9]")),
                 ],
@@ -72,7 +77,7 @@ class LoginPage extends StatelessWidget {
               const SizedBox(height: 10),
               TextFormField(
                 controller: _passwordController,
-                decoration: const InputDecoration(labelText: 'Password'),
+                decoration: InputDecoration(labelText: password),
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9]")),
                 ],
@@ -81,7 +86,7 @@ class LoginPage extends StatelessWidget {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () => _login(context),
-                child: const Text('Login'),
+                child: Text(login),
               ),
               TextButton(
                 onPressed: () {

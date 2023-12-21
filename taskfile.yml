@@ -1,0 +1,12 @@
+version: '3'
+
+tasks:
+  lang:
+    cmds:
+      - flutter gen-l10n --arb-dir=lib/pkg/localization
+    silent: true
+
+  run:
+    cmds:
+      - flutter run -d chrome
+    silent: true

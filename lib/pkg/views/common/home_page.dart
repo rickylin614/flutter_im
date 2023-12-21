@@ -51,6 +51,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // 目前主題的未選中顏色
+    Color themeUnselectedColor = Theme.of(context).unselectedWidgetColor;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(getLabel(context)),
@@ -81,7 +84,8 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
         backgroundColor: Colors.blue[200],
-        unselectedItemColor: const Color.fromARGB(221, 119, 75, 75),
+        // unselectedItemColor: const Color.fromARGB(221, 119, 75, 75),
+        unselectedItemColor: themeUnselectedColor,
         selectedItemColor: Colors.red,
         showUnselectedLabels: true, // 顯示非選取的標籤
         currentIndex: _currentIndex,
