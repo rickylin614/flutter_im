@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application/pkg/service/sphelper.dart';
 import 'package:flutter_application/pkg/views/common/home_page.dart';
 import 'package:flutter_application/pkg/views/user/login_page.dart';
 import 'package:flutter_application/pkg/views/user/register.dart';
@@ -7,24 +8,29 @@ class AppRouter {
   static var routes = <String, WidgetBuilder>{
     "/login": (context) => LoginPage(),
     "/register": (context) => const RegisterPage(),
-    "/": (context) => const HomePage(),
+    // "/": (context) => const HomePage(), // 不匹配時套用onGenerateRoute
   };
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
-    // 可根据权限判断来导航到路由
-    // final bool hasToken = /* 根据实际情况检查是否存在 token */;
-    const hasToken = true;
-
-    if (routes[settings.name] != null) {
-      return MaterialPageRoute(builder: routes[settings.name]!);
-    }
-
     return MaterialPageRoute(builder: (context) {
-      if (hasToken) {
-        return const HomePage();
-      } /* else {
-      return const LoginPage();
-    }*/
+      return FutureBuilder<String>(
+        future: SPHelper().getToken(),
+        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator(); // 在等待 token 的時候顯示一個加載指示器
+          } else {
+            if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              if (snapshot.data != null && snapshot.data!.isNotEmpty) {
+                return const HomePage();
+              } else {
+                return LoginPage();
+              }
+            }
+          }
+        },
+      );
     });
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application/pkg/views/common/state.dart';
+import 'package:flutter_application/pkg/service/state.dart';
+import 'package:flutter_application/pkg/views/profile/lang_setting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LeftDraw extends StatefulWidget {
   const LeftDraw({super.key});
@@ -49,9 +51,20 @@ class _LeftDrawState extends State<LeftDraw> {
               onChanged: (value) {
                 final themeBloc = BlocProvider.of<ThemeBloc>(context);
                 themeBloc.toggleTheme(context);
-                setState(() {});
+                // setState(() {});
               },
             ),
+          ),
+          ListTile(
+            leading: const CircleAvatar(
+              child: Icon(Icons.language, color: Colors.white),
+            ),
+            title: Text(AppLocalizations.of(context)!.langSetting),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const LangSetting(),
+              ));
+            },
           ),
         ],
       ),

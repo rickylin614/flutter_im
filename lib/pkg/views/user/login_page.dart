@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_application/pkg/service/apiservice.dart';
+import 'package:flutter_application/pkg/service/authservice.dart';
+import 'package:flutter_application/pkg/service/sphelper.dart';
 import 'package:flutter_application/pkg/views/common/home_page.dart';
-import 'package:flutter_application/pkg/views/common/state.dart';
+import 'package:flutter_application/pkg/views/common/left_draw.dart';
 import 'package:flutter_application/pkg/views/common/util.dart';
 import 'package:flutter_application/pkg/views/user/register.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -23,12 +25,13 @@ class LoginPage extends StatelessWidget {
 
     // 登入請求API
     var apiService = ApiService(context);
-    var response = await apiService.login(context, username, password);
+    var response = await AuthService().login(context, username, password);
 
     if (response.code == "0") {
       // 提取token
       String token = response.data['token'];
-      AuthBloc().logIn(token);
+      SPHelper().logIn(token);
+      apiService.updateToken(token);
       // 登录成功，导航到HomePage
       if (!context.mounted) return;
       DialogUtils.showSuccessDialog(
@@ -51,11 +54,13 @@ class LoginPage extends StatelessWidget {
     String username = AppLocalizations.of(context)!.username;
     String password = AppLocalizations.of(context)!.password;
     String login = AppLocalizations.of(context)!.login;
+    String register = AppLocalizations.of(context)!.register;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: Text(login),
       ),
+      drawer: const LeftDraw(),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -70,9 +75,15 @@ class LoginPage extends StatelessWidget {
               TextFormField(
                 controller: _usernameController,
                 decoration: InputDecoration(labelText: username),
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9]")),
-                ],
+                // inputFormatters: [
+                // FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9]")),
+                // ],
+                validator: (value) {
+                  if (value!.contains(RegExp(r'[\u4e00-\u9fa5]'))) {
+                    return '請不要輸入中文字符';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 10),
               TextFormField(
@@ -92,7 +103,7 @@ class LoginPage extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).pushNamed(RegisterPage.routeName);
                 },
-                child: const Text('Register'),
+                child: Text(register),
               ),
             ],
           ),

@@ -10,5 +10,7 @@
   "logout":"logout",
   "login":"login",
   "username":"username",
-  "password":"password"
+  "password":"password",
+  "apiexception":"API call exception: ",
+  "register":"register"
 }

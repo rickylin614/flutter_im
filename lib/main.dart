@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application/pkg/chat_app.dart';
-import 'package:flutter_application/pkg/views/common/state.dart';
+import 'package:flutter_application/pkg/service/state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() async {

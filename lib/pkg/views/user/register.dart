@@ -1,9 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application/pkg/service/apiservice.dart';
+import 'package:flutter_application/pkg/service/authservice.dart';
 import 'package:flutter_application/pkg/views/common/util.dart';
 import 'package:flutter_application/pkg/views/user/login_page.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RegisterPage extends StatelessWidget {
   static const routeName = '/register';
@@ -25,9 +26,8 @@ class RegisterPage extends StatelessWidget {
       final String phoneNumber = phoneNumberController.text;
       final String username = usernameController.text;
 
-      var apiService = ApiService(context);
-      var response = await apiService.register(
-          context, email, password, phoneNumber, username, nickname);
+      var response = await AuthService()
+          .register(context, email, password, phoneNumber, username, nickname);
 
       if (!context.mounted) return;
       if (response.code == "0") {
@@ -46,7 +46,7 @@ class RegisterPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Register'),
+        title: Text(AppLocalizations.of(context)!.register),
       ),
       body: Center(
         child: Padding(

@@ -3,6 +3,7 @@ import 'package:flutter_application/pkg/chat_app.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+// APP 存機密資料才用
 class AuthBloc extends Cubit<bool> {
   final _storage = const FlutterSecureStorage();
 
