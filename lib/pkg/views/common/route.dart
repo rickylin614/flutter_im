@@ -6,7 +6,7 @@ import 'package:flutter_application/pkg/views/user/register.dart';
 
 class AppRouter {
   static var routes = <String, WidgetBuilder>{
-    "/login": (context) => LoginPage(),
+    // "/login": (context) => LoginPage(),
     "/register": (context) => const RegisterPage(),
     // "/": (context) => const HomePage(), // 不匹配時套用onGenerateRoute
   };

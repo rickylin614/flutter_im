@@ -12,33 +12,33 @@ class Contact extends StatefulWidget {
 
 class _ContactState extends State<Contact> {
   // 假設這是您的好友列表
-  final List<Map<String, dynamic>> friends = [
-    {'name': '好友1', 'icon': Icons.person},
-    {'name': '好友2', 'icon': Icons.person},
-    {'name': '好友3', 'icon': Icons.person},
-    {'name': '好友4', 'icon': Icons.person},
-    {'name': '好友5', 'icon': Icons.person},
-    // 添加更多好友...
-  ];
+  List<Friend> friends = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getList(context);
+  }
 
   void _getList(BuildContext context) async {
     // 登入請求API
     var response = await FriendService().getFriendList(context);
     var result =
         DataPage.fromJson(response.data, (json) => Friend.fromJson(json));
-    print(result);
+    setState(() {
+      friends = result.data;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    _getList(context);
     return Scaffold(
       body: ListView.builder(
         itemCount: friends.length,
         itemBuilder: (context, index) {
           return ListTile(
-            leading: Icon(friends[index]['icon']),
-            title: Text(friends[index]['name']),
+            leading: const Icon(Icons.person),
+            title: Text(friends[index].fUserName),
             trailing: PopupMenuButton<String>(
               onSelected: (value) {
                 // 處理選項的點擊事件
@@ -55,7 +55,7 @@ class _ContactState extends State<Contact> {
             ),
             onTap: () {
               // 點擊事件，進入好友對話頁面
-              print('點擊了: ${friends[index]['name']}');
+              print('點擊了: ${friends[index].fUserName}');
             },
           );
         },
