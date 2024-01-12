@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application/pkg/model/datapage.dart';
 import 'package:flutter_application/pkg/model/friend.dart';
 import 'package:flutter_application/pkg/service/friendservice.dart';
+import 'package:flutter_application/pkg/views/contact/chat.dart';
 
 class Contact extends StatefulWidget {
   const Contact({super.key});
@@ -55,7 +56,13 @@ class _ContactState extends State<Contact> {
             ),
             onTap: () {
               // 點擊事件，進入好友對話頁面
-              print('點擊了: ${friends[index].fUserName}');
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      ChatPage(friendName: friends[index].fUserName),
+                ),
+              );
             },
           );
         },
