@@ -3,6 +3,11 @@
 
 - 盡量用簡單/易懂的方式實現大多頁面與功能
 
+## install 
+
+```dart
+    flutter pub get
+```
 ## 
 
 - makefile安裝
