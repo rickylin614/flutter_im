@@ -12,7 +12,7 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   final String baseUrl = 'http://localhost:9000/im'; // web地址
-  final String imUrl = 'http://localhost:9001'; // ws地址
+  final String imUrl = 'ws://localhost:9001'; // ws地址
   Map<String, String> headers = {
     HttpHeaders.contentTypeHeader: 'application/json',
   };
