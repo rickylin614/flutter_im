@@ -1,13 +1,10 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_application/pkg/model/apiresponse.dart';
 import 'package:flutter_application/pkg/service/apiservice.dart';
 import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart' as io;
-import 'package:web_socket_channel/html.dart';
-import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class FriendService {
@@ -48,11 +45,8 @@ class FriendService {
     String webSocketUrl = '${apiService.imUrl}/connect';
 
     // Establish WebSocket connection
-    WebSocketChannel channel = kIsWeb
-        ? HtmlWebSocketChannel.connect(
-            Uri.parse(webSocketUrl).replace(queryParameters: header))
-        : IOWebSocketChannel.connect(
-            Uri.parse(webSocketUrl).replace(queryParameters: header));
+    final wsUrl = Uri.parse(webSocketUrl).replace(queryParameters: header);
+    final channel = WebSocketChannel.connect(wsUrl);
 
     return channel;
   }

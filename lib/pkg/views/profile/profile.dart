@@ -4,6 +4,8 @@ import 'package:flutter_application/pkg/views/common/home_page.dart';
 import 'package:flutter_application/pkg/views/profile/lang_setting.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'in_app_purchase_demo.dart';
+
 class Profile extends StatefulWidget {
   const Profile({super.key});
 
@@ -46,6 +48,16 @@ class _ProfileState extends State<Profile> {
                   MaterialPageRoute(builder: (context) => const HomePage()),
                   (route) => false);
               Navigator.pushNamed(context, "/login");
+            },
+          ),
+          // 列表项 4: 內購模擬
+          ListTile(
+            title: const Text('內購模擬'),
+            onTap: () {
+              // 导航到內購測試页面
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const InAppPurchaseDemo(),
+              ));
             },
           ),
           // 可以添加更多的列表项...
