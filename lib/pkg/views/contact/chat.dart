@@ -1,11 +1,20 @@
+// ignore_for_file: avoid_print
+
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_application/pkg/model/message.dart';
 import 'package:flutter_application/pkg/service/friendservice.dart';
+import 'package:flutter_application/pkg/service/sphelper.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class ChatPage extends StatefulWidget {
   final String friendName;
+  final String friendId;
 
-  const ChatPage({Key? key, required this.friendName}) : super(key: key);
+  const ChatPage({Key? key, required this.friendName, required this.friendId})
+      : super(key: key);
 
   @override
   ChatPageState createState() => ChatPageState();
@@ -30,8 +39,18 @@ class ChatPageState extends State<ChatPage> {
         setState(() {
           // Update UI with received messages
           // messages.add('Friend: ${data.toString()}');
-          messages.add(
-              Message(sender: 'Friend', msg: data.toString(), isMine: false));
+          // messages.add(
+          // Message(sender: 'Friend', msgContent: data.toString(), isMine: false));
+          if (data is Uint8List) {
+            String dataString = utf8.decode(data);
+            Message msg = Message.fromJson(json.decode(dataString));
+            SPHelper().getUserName().then((name) {
+              if (msg.sender == name) {
+                msg.isMine = true;
+              }
+              messages.add(msg);
+            });
+          }
         });
         print(data);
       },
@@ -108,8 +127,8 @@ class ChatPageState extends State<ChatPage> {
                       ? Colors.blue[100]
                       : Colors.green[100],
                 ),
-                child:
-                    Text('${messages[index].sender}: ${messages[index].msg}'),
+                child: Text(
+                    '${messages[index].sender}: ${messages[index].msgContent}'),
               ),
             ),
           );
@@ -120,11 +139,24 @@ class ChatPageState extends State<ChatPage> {
 
   void _sendMessage() {
     if (_controller.text.isNotEmpty) {
-      channel?.sink.add('message: ${_controller.text}');
+      // channel?.sink.add('message: ${_controller.text}');
       setState(() {
-        messages
-            .add(Message(sender: 'Me', msg: _controller.text, isMine: true));
-        _controller.text = "";
+        // messages
+        //     .add(Message(sender: 'Me', msg: _controller.text, isMine: true));
+        SPHelper().getUserName().then((name) {
+          Message msg = Message(
+            sender: name,
+            recipient: widget.friendName,
+            msgContent: _controller.text,
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+            status: MessageStatus.normal,
+            msgType: MessageType.singleChatType,
+          );
+          String data = msg.toJson();
+          channel?.sink.add(data);
+          _controller.text = "";
+        });
       });
     }
   }
@@ -137,15 +169,15 @@ class ChatPageState extends State<ChatPage> {
   }
 }
 
-class Message {
-  final String sender;
-  final String type;
-  final String msg;
-  final bool isMine;
+// class Message {
+//   final String sender;
+//   final String type;
+//   final String msg;
+//   final bool isMine;
 
-  Message(
-      {required this.sender,
-      required this.msg,
-      this.type = 'message',
-      required this.isMine});
-}
+//   Message(
+//       {required this.sender,
+//       required this.msg,
+//       this.type = 'message',
+//       required this.isMine});
+// }

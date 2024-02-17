@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application/pkg/model/datapage.dart';
 import 'package:flutter_application/pkg/model/friend.dart';
@@ -59,8 +61,10 @@ class _ContactState extends State<Contact> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      ChatPage(friendName: friends[index].fUserName),
+                  builder: (context) => ChatPage(
+                    friendName: friends[index].fUserName,
+                    friendId: friends[index].fUserId,
+                  ),
                 ),
               );
             },

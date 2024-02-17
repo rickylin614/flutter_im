@@ -26,6 +26,7 @@ class DataPage<T> {
         data: dataList,
       );
     } catch (e) {
+      // ignore: avoid_print
       print(e);
       return DataPage(index: 0, size: 0, pages: 0, total: 0, data: []);
     }

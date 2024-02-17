@@ -11,8 +11,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  final String baseUrl = 'http://localhost:9000/im'; // web地址
-  final String imUrl = 'ws://localhost:9001'; // ws地址
+  final String baseUrl = 'http://10.126.6.43:9000/im'; // web地址
+  final String imUrl = 'ws://10.126.6.43:9001'; // ws地址
+
   Map<String, String> headers = {
     HttpHeaders.contentTypeHeader: 'application/json',
   };
