@@ -22,37 +22,34 @@ class ChatPage extends StatefulWidget {
 
 class ChatPageState extends State<ChatPage> {
   final TextEditingController _controller = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   WebSocketChannel? channel;
   FocusNode? myFocusNode; // 創建 FocusNode
+  String? userName; // 用戶名稱
+  String? userId; // 用戶識別碼
 
   @override
   void initState() {
     super.initState();
     _initSocket();
     myFocusNode = FocusNode();
+    print(widget.friendId);
   }
 
   void _initSocket() async {
     channel = await FriendService().createWebSocketConnect(context);
+    userName = await SPHelper().getUserName();
+    userId = await SPHelper().getUserId();
     channel?.stream.listen(
       (data) {
         setState(() {
-          // Update UI with received messages
-          // messages.add('Friend: ${data.toString()}');
-          // messages.add(
-          // Message(sender: 'Friend', msgContent: data.toString(), isMine: false));
           if (data is Uint8List) {
             String dataString = utf8.decode(data);
             Message msg = Message.fromJson(json.decode(dataString));
-            SPHelper().getUserName().then((name) {
-              if (msg.sender == name) {
-                msg.isMine = true;
-              }
-              messages.add(msg);
-            });
+            messages.add(msg);
+            pullDownScroll();
           }
         });
-        print(data);
       },
       onDone: () {
         print('WebSocket is closed');
@@ -61,9 +58,9 @@ class ChatPageState extends State<ChatPage> {
         print('Error: $error');
       },
     );
-
     // Send a 'connect' message when the WebSocket connection is established
-    channel?.sink.add('connect');
+    Message msg = Message.connectMsg(userName ?? '');
+    channel?.sink.add(msg.toJson());
   }
 
   List<Message> messages = [];
@@ -81,7 +78,7 @@ class ChatPageState extends State<ChatPage> {
             if (channel == null)
               const CircularProgressIndicator()
             else
-              _buildChatUI(),
+              _buildChatUI(context),
             Row(
               children: <Widget>[
                 Expanded(
@@ -108,27 +105,56 @@ class ChatPageState extends State<ChatPage> {
     );
   }
 
-  Widget _buildChatUI() {
+  Widget _buildChatUI(BuildContext context) {
+    // 目前主題的未選中顏色
+    Color? chatBackgroundColor = Theme.of(context).primaryColorLight;
+    // TextStyle? bodyLarge = Theme.of(context).textTheme.bodyLarge;
+    TextStyle? bodyMedium = Theme.of(context).textTheme.bodyMedium;
+    TextStyle? bodySmall = Theme.of(context).textTheme.bodySmall;
+
     // 將原本的 build 方法內容放到這裡，並使用 channel 參數
     return Expanded(
       child: ListView.builder(
+        controller: _scrollController,
         itemCount: messages.length,
         itemBuilder: (context, index) {
           return ListTile(
+            contentPadding: const EdgeInsets.all(10),
             title: Align(
-              alignment: messages[index].isMine
-                  ? Alignment.centerRight
-                  : Alignment.centerLeft,
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: messages[index].isMine
-                      ? Colors.blue[100]
-                      : Colors.green[100],
-                ),
-                child: Text(
-                    '${messages[index].sender}: ${messages[index].msgContent}'),
+              child: Column(
+                crossAxisAlignment: messages[index].sender == (userName ?? '')
+                    ? CrossAxisAlignment.end
+                    : CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment:
+                        messages[index].sender == (userName ?? '')
+                            ? MainAxisAlignment.end
+                            : MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${messages[index].sender}  ',
+                        style: bodySmall,
+                      ),
+                      Text(
+                        '${messages[index].createdAt}',
+                        style: bodySmall,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 3),
+                  Container(
+                    padding: const EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: chatBackgroundColor,
+                    ),
+                    child: Text(
+                      messages[index].msgContent,
+                      style: bodyMedium,
+                    ),
+                  ),
+                ],
               ),
             ),
           );
@@ -141,22 +167,35 @@ class ChatPageState extends State<ChatPage> {
     if (_controller.text.isNotEmpty) {
       // channel?.sink.add('message: ${_controller.text}');
       setState(() {
-        // messages
-        //     .add(Message(sender: 'Me', msg: _controller.text, isMine: true));
-        SPHelper().getUserName().then((name) {
-          Message msg = Message(
-            sender: name,
-            recipient: widget.friendName,
-            msgContent: _controller.text,
-            createdAt: DateTime.now(),
-            updatedAt: DateTime.now(),
-            status: MessageStatus.normal,
-            msgType: MessageType.singleChatType,
-          );
-          String data = msg.toJson();
-          channel?.sink.add(data);
-          _controller.text = "";
-        });
+        Message msg = Message(
+          sender: userName ?? '',
+          senderId: userId ?? '',
+          recipient: widget.friendName,
+          recipientId: widget.friendId,
+          msgContent: _controller.text,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          status: MessageStatus.normal,
+          msgType: MessageType.singleChatType,
+        );
+        messages.add(msg);
+        String data = msg.toJson();
+        channel?.sink.add(data);
+        _controller.text = "";
+        pullDownScroll();
+      });
+    }
+  }
+
+  void pullDownScroll() {
+    // Scroll to the bottom after adding messages
+    if (_scrollController.hasClients) {
+      Future.delayed(const Duration(milliseconds: 16)).then((value) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOutQuart,
+        );
       });
     }
   }
@@ -164,20 +203,8 @@ class ChatPageState extends State<ChatPage> {
   @override
   void dispose() {
     myFocusNode?.dispose();
+    _scrollController.dispose();
     channel?.sink.close();
     super.dispose();
   }
 }
-
-// class Message {
-//   final String sender;
-//   final String type;
-//   final String msg;
-//   final bool isMine;
-
-//   Message(
-//       {required this.sender,
-//       required this.msg,
-//       this.type = 'message',
-//       required this.isMine});
-// }

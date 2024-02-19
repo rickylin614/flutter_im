@@ -25,7 +25,7 @@ class MessageState extends State<Message> {
             ElevatedButton(
               onPressed: () async {
                 var scaffoldContext = context;
-                SPHelper().logIn(_controller.text, 'test').then((_) {
+                SPHelper().logIn(_controller.text, 'test', 'test').then((_) {
                   ScaffoldMessenger.of(scaffoldContext).showSnackBar(
                     const SnackBar(content: Text('Token set successfully')),
                   );

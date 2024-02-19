@@ -31,7 +31,8 @@ class LoginPage extends StatelessWidget {
       // 提取token
       String token = response.data['token'];
       String name = response.data['username'];
-      await SPHelper().logIn(token, name);
+      String id = response.data['userid'];
+      await SPHelper().logIn(token, name, id);
       apiService.updateToken(token);
       // 登录成功，导航到HomePage
       if (!context.mounted) return;

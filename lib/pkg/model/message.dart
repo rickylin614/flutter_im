@@ -2,19 +2,22 @@ import 'dart:convert';
 
 class Message {
   String? id;
-  String sender;
-  String recipient;
+  String? sender;
+  String? senderId;
+  String? recipient;
+  String? recipientId;
   String msgContent;
   DateTime createdAt;
   DateTime updatedAt;
   MessageStatus status;
   MessageType msgType;
-  bool isMine = false;
 
   Message({
     this.id,
-    required this.sender,
-    required this.recipient,
+    this.sender,
+    this.senderId,
+    this.recipient,
+    this.recipientId,
     required this.msgContent,
     required this.createdAt,
     required this.updatedAt,
@@ -26,7 +29,9 @@ class Message {
     return Message(
       id: json['id'],
       sender: json['sender'],
+      senderId: json['senderId'],
       recipient: json['recipient'],
+      recipientId: json['recipientId'],
       msgContent: json['msgContent'],
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
@@ -35,26 +40,23 @@ class Message {
     );
   }
 
-  // factory Message.fromMsgpack(Uint8List msg) {
-  //   final Map<String, dynamic> msgPackData = deserialize(msg);
-
-  //   return Message(
-  //     id: msgPackData['id'],
-  //     sender: msgPackData['sender'],
-  //     recipient: msgPackData['recipient'],
-  //     msgContent: msgPackData['msgContent'],
-  //     createdAt: DateTime.parse(msgPackData['createdAt']),
-  //     updatedAt: DateTime.parse(msgPackData['updatedAt']),
-  //     status: MessageStatus.values[msgPackData['status']],
-  //     msgType: MessageType.values[msgPackData['msgType']],
-  //   );
-  // }
+  factory Message.connectMsg(String sender) {
+    return Message(
+      msgContent: 'connect',
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      status: MessageStatus.normal,
+      msgType: MessageType.notificationChatType,
+    );
+  }
 
   String toJson() {
     final Map<String, dynamic> msgPackData = {
       'id': id,
       'sender': sender,
+      'senderId': senderId,
       'recipient': recipient,
+      'recipientId': recipientId,
       'msgContent': msgContent,
       // 'createdAt': createdAt.millisecondsSinceEpoch,
       // 'updatedAt': updatedAt.millisecondsSinceEpoch,
