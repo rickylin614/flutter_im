@@ -31,6 +31,7 @@ class FriendService {
     io.Socket socket = io.io(apiService.imUrl, <String, dynamic>{
       'transports': ['websocket'],
       'extraHeaders': header, // 將 header 放在這裡
+      'autoConnect': true,
       'path': '/connect'
     });
 
